@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <sstream>
+#include<algorithm>
 
 using namespace std;
 
@@ -40,7 +41,9 @@ int main()
     }
 
     TurnPike TP(distances);
- 
+    //cout << "Distances are: " << endl;
+   // print(distances);
+
     timer.start();
     TP.reconstruct();
     timer.stop();
@@ -131,7 +134,16 @@ void fileBuildPoints(vector<int>& points, vector<int>& distances, ifstream& infi
 
 vector<int> getDistances(vector<int> points)
 {
-    return points;
+    vector<int> distances;
+    for (int i = 0; i < points.size(); i++)
+    {
+        for (int k = i + 1; k < points.size(); k++)
+        {
+            distances.push_back(points[k] - points[i]);
+        }
+    }
+    sort(distances.begin(), distances.end());
+    return distances;
 }
 
 void print( const vector<int>& points)
