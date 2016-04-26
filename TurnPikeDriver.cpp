@@ -15,24 +15,37 @@
 #include <cstdio>
 #include <sstream>
 #include<algorithm>
+#include<list>
 
 using namespace std;
 
-bool getInput(vector<int>& points, vector<int>& distances);
+bool getInput(vector<int>& points, list<int>& distances);
 
-void randBuildPoints(vector<int>& points, vector<int>& distances, int size);
+void randBuildPoints(vector<int>& points, list<int>& distances, int size);
 
-void fileBuildPoints(vector<int>& points, vector<int>& distances, ifstream& infile);
+void fileBuildPoints(vector<int>& points, list<int>& distances, ifstream& infile);
 
-vector<int> getDistances(vector<int> points);
+list<int> getDistances(vector<int> points);
 
-void print(const vector<int>& points);
+template<typename T>
+void print(const T vals)
+{
+    cout << "Point\tPosition" << endl;
+    int i = 0;
+    auto itBegin = vals.begin();
+    while (itBegin != vals.end())
+    {
+        cout << i + 1 << ":\t" << *itBegin << endl;
+        i++;
+        itBegin++;
+    }
+}
 
 int main()
 {
     string input;
     Timer timer;
-    vector<int> distances;
+    list<int> distances;
     vector<int> points;
     bool going = getInput(points, distances);
     while (!going)
@@ -41,8 +54,8 @@ int main()
     }
 
     TurnPike TP(distances);
-    //cout << "Distances are: " << endl;
-   // print(distances);
+    cout << "Distances are: " << endl;
+    print(distances);
 
     timer.start();
     TP.reconstruct();
@@ -56,7 +69,7 @@ int main()
     return 0;
 }
 
-bool getInput(vector<int>& points, vector<int>& distances)
+bool getInput(vector<int>& points, list<int>& distances)
 {
 
     string filename;
@@ -107,7 +120,7 @@ bool getInput(vector<int>& points, vector<int>& distances)
 
 
 
-void randBuildPoints(vector<int>& points, vector<int>& distances, int size)
+void randBuildPoints(vector<int>& points, list<int>& distances, int size)
 {
     int point = 0;
     points.push_back(point);
@@ -120,7 +133,7 @@ void randBuildPoints(vector<int>& points, vector<int>& distances, int size)
     distances = getDistances(points);
 }
 
-void fileBuildPoints(vector<int>& points, vector<int>& distances, ifstream& infile)
+void fileBuildPoints(vector<int>& points, list<int>& distances, ifstream& infile)
 {
     int point = 0;
     points.push_back(point);
@@ -132,7 +145,7 @@ void fileBuildPoints(vector<int>& points, vector<int>& distances, ifstream& infi
     distances = getDistances(points);
 }
 
-vector<int> getDistances(vector<int> points)
+list<int> getDistances(vector<int> points)
 {
     vector<int> distances;
     for (int i = 0; i < points.size(); i++)
@@ -143,14 +156,7 @@ vector<int> getDistances(vector<int> points)
         }
     }
     sort(distances.begin(), distances.end());
-    return distances;
+    list<int> ret(distances.begin(), distances.end());
+    return ret;
 }
 
-void print( const vector<int>& points)
-{
-    cout << "Point\tPosition" << endl;
-    for (int i = 0; i < points.size(); i++)
-    {
-        cout << i + 1 << ":\t" << points[i] << endl;
-    }
-}
