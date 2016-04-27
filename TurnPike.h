@@ -16,10 +16,10 @@ class TurnPike
 public:
 	explicit TurnPike(list<int> distances);
 	void reconstruct();
-	vector<int> getPoints() const;
+	list<int> getPoints() const;
 private:
 	list<int> _distances;
-	vector<int> _points;
+	list<int> _points;
 	bool place(vector<int> & x, list<int> d, int n, int left, int right);
 	bool turnpike(vector<int> & x, list<int> d, int n);
 };
@@ -39,10 +39,10 @@ TurnPike::TurnPike(list<int> distances) : _distances(distances)
 
 void TurnPike::reconstruct()
 {
-	//_points = _distances;
+	_points = _distances;
 }
 
-vector<int> TurnPike::getPoints() const
+list<int> TurnPike::getPoints() const
 {
 	return _points;
 }
@@ -100,6 +100,7 @@ bool place(vector<int> & x, list<int> d, int n, int left, int right)
 				}
 				//sort d again.
 				//sort(d.begin(), d.end());
+				d.sort();
 			}
 		}
 		temp = abs(x[n] - dmax - x[j]);
@@ -122,6 +123,7 @@ bool place(vector<int> & x, list<int> d, int n, int left, int right)
 					}
 					//sort
 					//sort(d.begin(), d.end());
+					d.sort();
 				}
 
 			}
