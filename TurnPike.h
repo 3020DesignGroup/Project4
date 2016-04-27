@@ -10,6 +10,8 @@ using namespace std;
 #include<vector>
 #include<list>
 #include<algorithm>
+#include <iostream>
+#include <cmath>
 
 class TurnPike
 {
@@ -31,10 +33,16 @@ TurnPike::TurnPike(list<int> distances) : _distances(distances)
 	bool found = false;
 	vector<int> x;
 	int i = distances.size();
-	int n = i*(i - 1) / 2;
+	//cout << "probelmsdfasd  asg " << i << endl;
+	int n = (sqrt(8*i+1)+1)/2;
 	x.resize(n + 1);
 	found = turnpike(x, distances, n);
-
+	if (found == false)
+	{
+		cout << "error!!!!!!!!!" << endl << endl;
+	}
+	list<int> ret(x.begin(), x.end());
+	_distances = ret;
 }
 
 void TurnPike::reconstruct()
@@ -59,15 +67,16 @@ bool TurnPike::turnpike(vector<int> & x, list<int> d, int n)
 	if (it != d.end())
 	{
 		d.remove(temp);
-		return place(x, d, n, 2, n - 2);
+		return place(x, d, n, 2, n - 2); 
 	}
 	else
 	{
 		return false;
 	}
 
+	//return true;
 }
-bool place(vector<int> & x, list<int> d, int n, int left, int right)
+bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 {
 	
 	bool found = false;
@@ -76,59 +85,64 @@ bool place(vector<int> & x, list<int> d, int n, int left, int right)
 		return true;
 	}
 	int dmax = d.back();
-	d.pop_back();
+	//d.pop_back();
 	
-	for (int j = 1; j < left && j > right && j <= n; j++) //this may need revision. 
+	for (int j = 1; j <= n; j++) //this may need revision. 
 	{
-		int temp = x[j] - dmax;
-		list<int>::iterator it;
-		it = find(d.begin(), d.end(), temp);
-		if (it != d.end())
-		{
-			x[right] = dmax;
-			for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
+		if (j < left || j > right)
+		{ 
+			//cout << "hiaaefklhjaghjkadghjkag hjk  ghjk g " << endl;
+			int temp = abs(x[j] - dmax);
+			list<int>::iterator it;
+			it = find(d.begin(), d.end(), temp);
+			if (it != d.end())
 			{
-				d.remove(abs(x[i] - dmax));
-			}
-			found = place(x, d, n, left, right - 1);
+				x[right] = dmax;
+				for (int i = j; i < left && i > right && i <= n; i++) //this may need revision. 
+				{
+					d.remove(abs(x[i] - dmax));
+				}
+				found = place(x, d, n, left, right - 1);
 
-			if (!found)
-			{
-				for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
-				{
-					d.push_back(abs(x[i] - dmax));
-				}
-				//sort d again.
-				//sort(d.begin(), d.end());
-				d.sort();
-			}
-		}
-		temp = abs(x[n] - dmax - x[j]);
-		it = find(d.begin(), d.end(), temp);
-		if (!found && (it != d.end()))
-		{
-			for (int j = 1; j < left && j > right && j <= n; j++) //this may need revision. 
-			{
-				x[left] = x[n] - dmax;
-				for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
-				{
-					d.remove(abs(x[n] - dmax - x[j]));
-				}
-				found = place(x, d, n, left + 1, right);
 				if (!found)
 				{
-					for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
+					for (int i = j; i < left && i > right && i <= n; i++) //this may need revision. 
 					{
-						d.push_back(abs(x[n] - dmax - x[j]));
+						d.push_back(abs(x[i] - dmax));
 					}
-					//sort
+					//sort d again.
 					//sort(d.begin(), d.end());
 					d.sort();
 				}
+			}
+			temp = abs(x[n] - dmax - x[j]);
+			it = find(d.begin(), d.end(), temp);
+			if (!found && (it != d.end()))
+			{
+				for (int j = 1; j < left && j > right && j <= n; j++) //this may need revision. 
+				{
+					x[left] = x[n] - dmax;
+					for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
+					{
+						d.remove(abs(x[n] - dmax - x[j]));
+					}
+					found = place(x, d, n, left + 1, right);
+					if (!found)
+					{
+						for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
+						{
+							d.push_back(abs(x[n] - dmax - x[j]));
+						}
+						//sort
+						//sort(d.begin(), d.end());
+						d.sort();
+					}
 
+				}
 			}
 		}
 	}
 	return found;
+	//return true;
 }
 
