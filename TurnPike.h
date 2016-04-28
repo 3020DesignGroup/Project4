@@ -118,6 +118,7 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 			if (tempsize1 == d.size())
 			{
 				found = false;
+				x[right] = 0;
 			}
 			else
 			{
@@ -151,6 +152,7 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 				if (tempsize1 == d.size())
 				{
 					found = false;
+					x[left] = 0;
 				}
 				else
 				{
@@ -168,8 +170,6 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 			}
 		}
 	}
-
-
 	return found;
 	//return true;
 }
