@@ -24,6 +24,7 @@ private:
 	list<int> _points;
 	bool place(vector<int> & x, list<int> d, int n, int left, int right);
 	bool turnpike(vector<int> & x, list<int> d, int n);
+	list<int> remove1(list<int> d, int x);
 };
 
 
@@ -66,7 +67,7 @@ bool TurnPike::turnpike(vector<int> & x, list<int> d, int n)
 	it = find(d.begin(), d.end(), temp);
 	if (it != d.end())
 	{
-		d.remove(temp);
+		d = remove1(d,temp);
 		return place(x, d, n, 2, n - 2); 
 	}
 	else
@@ -85,64 +86,84 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 		return true;
 	}
 	int dmax = d.back();
-	//d.pop_back();
-	
-	for (int j = 1; j <= n; j++) //this may need revision. 
+	vector<int> check;
+	int temp = 0;
+	for (int i = 0; i < x.size(); i++)
 	{
-		if (j < left || j > right)
-		{ 
-			//cout << "hiaaefklhjaghjkadghjkag hjk  ghjk g " << endl;
-			int temp = abs(x[j] - dmax);
-			list<int>::iterator it;
-			it = find(d.begin(), d.end(), temp);
-			if (it != d.end())
+		if (i >= 1 && i < left && i > right)
+		{
+			cout << "ahjkahjkghklahjkag" << endl;
+			check.push_back(i);
+			for each(int k in d)
 			{
-				x[right] = dmax;
-				for (int i = j; i < left && i > right && i <= n; i++) //this may need revision. 
+				if (k == (x[i] - dmax))
 				{
-					d.remove(abs(x[i] - dmax));
-				}
-				found = place(x, d, n, left, right - 1);
-
-				if (!found)
-				{
-					for (int i = j; i < left && i > right && i <= n; i++) //this may need revision. 
+					x[right] = dmax;
+					for each(int j in check)
 					{
-						d.push_back(abs(x[i] - dmax));
+						d = remove1(d,abs(x[j] - dmax));
 					}
-					//sort d again.
-					//sort(d.begin(), d.end());
-					d.sort();
-				}
-			}
-			temp = abs(x[n] - dmax - x[j]);
-			it = find(d.begin(), d.end(), temp);
-			if (!found && (it != d.end()))
-			{
-				for (int j = 1; j < left && j > right && j <= n; j++) //this may need revision. 
-				{
-					x[left] = x[n] - dmax;
-					for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
-					{
-						d.remove(abs(x[n] - dmax - x[j]));
-					}
-					found = place(x, d, n, left + 1, right);
+					found = place(x, d, n, left, right - 1);
+					
 					if (!found)
 					{
-						for (int i = 1; i < left && i > right && i <= n; i++) //this may need revision. 
+						for each(int j in check)
 						{
-							d.push_back(abs(x[n] - dmax - x[j]));
+							d.push_back(abs(x[j] - dmax));
+							d.sort();
 						}
-						//sort
-						//sort(d.begin(), d.end());
-						d.sort();
 					}
 
 				}
 			}
 		}
 	}
+	for each(int i in check)
+	{
+		for each(int k in d)
+		{
+			if (k == (x[i] - dmax))
+			{
+				x[left] = x[n] - dmax;
+				for each(int j in check)
+				{
+					d = remove1(d,abs(x[n]-dmax - x[j]));
+				}
+				found = place(x, d, n, left + 1, right);
+
+				if (!found)
+				{
+					for each(int j in check)
+					{
+						d.push_back(abs(x[n] - dmax - x[j]));
+						d.sort();
+					}
+				}
+
+			}
+		}
+	}
 	return found;
 	//return true;
 }
+
+
+list<int> TurnPike::remove1(list<int> d, int x)
+{
+	list<int> removed;
+	bool check = false;
+	for each (int j in d)
+	{
+		if ((j == x) && check == false)
+		{
+			check = true;
+		}
+		else
+		{
+			removed.push_back(j);
+		}
+	}
+	return removed;
+}
+
 
