@@ -35,7 +35,7 @@ TurnPike::TurnPike(list<int> distances) : _distances(distances)
 	vector<int> x;
 	int i = distances.size();
 	//cout << "probelmsdfasd  asg " << i << endl;
-	int n = (sqrt(8*i+1)+1)/2;
+	int n = (sqrt(8 * i + 1) + 1) / 2;
 	x.resize(n + 1);
 	found = turnpike(x, distances, n);
 	if (found == false)
@@ -60,15 +60,15 @@ bool TurnPike::turnpike(vector<int> & x, list<int> d, int n)
 	x[1] = 0;
 	x[n] = d.back();
 	d.pop_back();
-	x[n-1] = d.back();
+	x[n - 1] = d.back();
 	d.pop_back();
 	list<int>::iterator it;
 	int temp = x[n] - x[n - 1];
 	it = find(d.begin(), d.end(), temp);
 	if (it != d.end())
 	{
-		d = remove1(d,temp);
-		return place(x, d, n, 2, n - 2); 
+		d = remove1(d, temp);
+		return place(x, d, n, 2, n - 2);
 	}
 	else
 	{
@@ -79,7 +79,8 @@ bool TurnPike::turnpike(vector<int> & x, list<int> d, int n)
 }
 bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 {
-	cout << "right == " << right << "  left == " << left << endl << endl;
+	//cout << "right == " << right << "  left == " << left << "size of d == " << d.size() << endl << endl;
+
 	bool found = false;
 	if (d.empty())
 	{
@@ -97,29 +98,38 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 			//cout << "i == " << i << endl;
 		}
 	}
-	
+
 	for each (int j in check)
 	{
 		temp = abs(x[j] - dmax);
-		
+
 		list<int>::iterator it;
 		it = find(d.begin(), d.end(), temp);
 		if (it != d.end())
 		{
+			
 			cout << "temp == " << temp << endl;
 			x[right] = dmax;
+			int tempsize1 = d.size();
 			for each (int i in check)
 			{
-				d = remove1(d, abs(x[j] - dmax));
+				d = remove1(d, abs(x[i] - dmax));
 			}
-			found = place(x, d, n, left, right - 1);
-			if (!found)
+			if (tempsize1 == d.size())
 			{
-				for each (int i in check)
+				found = false;
+			}
+			else
+			{
+				found = place(x, d, n, left, right - 1);
+				if (!found)
 				{
-					d.push_back(abs(x[j] - dmax));
+					for each (int i in check)
+					{
+						d.push_back(abs(x[i] - dmax));
+					}
+					d.sort();
 				}
-				d.sort();
 			}
 		}
 	}
@@ -133,25 +143,33 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 			if (it != d.end())
 			{
 				x[left] = dmax;
+				int tempsize1 = d.size();
 				for each (int i in check)
 				{
-					d = remove1(d, abs(x[n] - dmax - x[j]));
+					d = remove1(d, abs(x[n] - dmax - x[i]));
 				}
-				found = place(x, d, n, left + 1, right);
-
-				if (!found)
+				if (tempsize1 == d.size())
 				{
-					for each (int i in check)
+					found = false;
+				}
+				else
+				{
+					found = place(x, d, n, left + 1, right);
+
+					if (!found)
 					{
-						d.push_back(abs(x[n] - dmax - x[j]));
+						for each (int i in check)
+						{
+							d.push_back(abs(x[n] - dmax - x[i]));
+						}
+						d.sort();
 					}
-					d.sort();
 				}
 			}
 		}
 	}
 
-			
+
 	return found;
 	//return true;
 }
@@ -174,5 +192,4 @@ list<int> TurnPike::remove1(list<int> d, int x)
 	}
 	return removed;
 }
-
 
