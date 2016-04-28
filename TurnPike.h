@@ -79,7 +79,7 @@ bool TurnPike::turnpike(vector<int> & x, list<int> d, int n)
 }
 bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 {
-	
+	cout << "right == " << right << "  left == " << left << endl << endl;
 	bool found = false;
 	if (d.empty())
 	{
@@ -90,59 +90,68 @@ bool TurnPike::place(vector<int> & x, list<int> d, int n, int left, int right)
 	int temp = 0;
 	for (int i = 0; i < x.size(); i++)
 	{
-		if (i >= 1 && i < left && i > right)
+		if (i >= 1 && (i < left || i > right))
 		{
-			cout << "ahjkahjkghklahjkag" << endl;
+			//cout << "ahjkahjkghklahjkag" << endl;
 			check.push_back(i);
-			for each(int k in d)
+			//cout << "i == " << i << endl;
+		}
+	}
+	
+	for each (int j in check)
+	{
+		temp = abs(x[j] - dmax);
+		
+		list<int>::iterator it;
+		it = find(d.begin(), d.end(), temp);
+		if (it != d.end())
+		{
+			cout << "temp == " << temp << endl;
+			x[right] = dmax;
+			for each (int i in check)
 			{
-				if (k == (x[i] - dmax))
+				d = remove1(d, abs(x[j] - dmax));
+			}
+			found = place(x, d, n, left, right - 1);
+			if (!found)
+			{
+				for each (int i in check)
 				{
-					x[right] = dmax;
-					for each(int j in check)
-					{
-						d = remove1(d,abs(x[j] - dmax));
-					}
-					found = place(x, d, n, left, right - 1);
-					
-					if (!found)
-					{
-						for each(int j in check)
-						{
-							d.push_back(abs(x[j] - dmax));
-							d.sort();
-						}
-					}
-
+					d.push_back(abs(x[j] - dmax));
 				}
+				d.sort();
 			}
 		}
 	}
-	for each(int i in check)
+	if (!found)
 	{
-		for each(int k in d)
+		for each (int j in check)
 		{
-			if (k == (x[i] - dmax))
+			temp = abs(x[n] - dmax - x[j]);
+			list<int>::iterator it;
+			it = find(d.begin(), d.end(), temp);
+			if (it != d.end())
 			{
-				x[left] = x[n] - dmax;
-				for each(int j in check)
+				x[left] = dmax;
+				for each (int i in check)
 				{
-					d = remove1(d,abs(x[n]-dmax - x[j]));
+					d = remove1(d, abs(x[n] - dmax - x[j]));
 				}
 				found = place(x, d, n, left + 1, right);
 
 				if (!found)
 				{
-					for each(int j in check)
+					for each (int i in check)
 					{
 						d.push_back(abs(x[n] - dmax - x[j]));
-						d.sort();
 					}
+					d.sort();
 				}
-
 			}
 		}
 	}
+
+			
 	return found;
 	//return true;
 }
