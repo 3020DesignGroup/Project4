@@ -41,6 +41,22 @@ void print(const T vals)
     }
 }
 
+
+vector<int> mirror(vector<int> vals)
+{
+    vector<int> ret = vals;
+    for (int i = 0; i < vals.size(); i++)
+    {
+        vals[i] = vals.back() - vals[i];
+    }
+    for (int i = 0; i < vals.size(); i++)
+    {
+        ret[i] = vals[vals.size() - 1 - i];
+    }
+    
+    return ret;
+}
+
 int main()
 {
     string input;
@@ -61,11 +77,21 @@ int main()
     TP.reconstruct();
     timer.stop();
 
+    sort(points.begin(), points.end());
+
     cout << "Original points are : " << endl;
     print(points);
+    cout << "Mirrored Points are : " << endl;
+    print(mirror(points));
     cout << "Reconstructed Points are : " << endl;
     print(TP.getPoints());
     cout << "\npoints were found in " << timer() << " seconds" << endl << endl;
+    cout << "original points ";
+
+    vector<int> mirroredPoints;
+    if (points == TP.getPoints() || mirror(points) == TP.getPoints()) cout << "Match ";
+    else cout << "Don't match ";
+    cout << "reconstructed points" << endl;
     return 0;
 }
 
@@ -124,7 +150,7 @@ void randBuildPoints(vector<int>& points, list<int>& distances, int size)
 {
     int point = 0;
     points.push_back(point);
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size - 1; i++)
     {
         point = randInt(1, size*size);
         points.push_back(point);
@@ -148,6 +174,7 @@ void fileBuildPoints(vector<int>& points, list<int>& distances, ifstream& infile
 list<int> getDistances(vector<int> points)
 {
     vector<int> distances;
+    sort(points.begin(), points.end());
     for (int i = 0; i < points.size(); i++)
     {
         for (int k = i + 1; k < points.size(); k++)
